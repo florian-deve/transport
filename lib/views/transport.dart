@@ -15,14 +15,14 @@ class Transport extends StatefulWidget {
       @required this.chViewlines,
       @required this.onChangedLineSel,
       @required this.mediaQuery,
-      @required this.onChangedStationSel})
+      @required this.favoriteLineToggle})
       : super(key: key);
   final Subjects subject;
   final ValueChanged<List<LineData>> onChanged;
   final ValueChanged<bool> chViewlines;
   final ValueChanged<int> onChangedLineSel;
   final double mediaQuery;
-  final ValueChanged<int> onChangedStationSel;
+  final ValueChanged<String> favoriteLineToggle;
 
   @override
   _TransportState createState() => _TransportState();
@@ -185,6 +185,13 @@ class _TransportState extends State<Transport> {
                                         child: new Text(itemsHours[index]));
                                   }),
                             ),
+                        SizedBox(
+                          width: 50,
+                          height: 30,
+                          child: !widget.subject.name.toLowerCase().contains("favorite") ? MaterialButton(
+                              child: Icon(line.data.lineData.favorite?
+                              Icons.bookmark:Icons.bookmark_border),
+                              onPressed: toBookmark) : null),
                           ],
                         ),
                       )
@@ -225,6 +232,8 @@ class _TransportState extends State<Transport> {
             ],
           );
   }
+
+
 
   Future<void> dowloadLines() async {
     if (widget.subject.linesData.length == 0) {
@@ -302,12 +311,20 @@ class _TransportState extends State<Transport> {
   void stationChange(index) {
     print('StationChange');
     widget.subject.linesData[widget.subject.lineSel].stationSel = index;
-    widget.onChangedStationSel(index);
+//    widget.onChangedStationSel(index);
     line.index = index;
     getHours();
     setState(() {});
   }
+  void toBookmark(){
+    print('toBookmark');
+    print(line);
+//    line.lineData.favorite = !line.lineData.favorite;
+    widget.favoriteLineToggle(line.lineData.id);
+    setState(() {
 
+    });
+  }
   Future<void> stationInit() async {
     if (line.stations == null || line.stations.length == 0) return;
     var lineNb = widget.subject.lineSel;

@@ -83,7 +83,29 @@ class _MyHomePageState extends State<MyHomePage> {
     ls[_currentIndex].lineSel = index;
   }
 
-  onChangedStationSel(int index){
+  favoriteLineToggle(String id){ //lineData.id
+    for(int i = 0 ; i < ls[_currentIndex].linesData.length ; i++){
+      if(ls[_currentIndex].linesData[i].id == id){
+        ls[_currentIndex].linesData[i].favorite = !ls[_currentIndex].linesData[i].favorite;
+        updateFovoriteList(ls[_currentIndex].linesData[i]);
+      }
+    }
+  }
+
+  void updateFovoriteList(LineData linesData) {
+      for(int i = 0; i < ls.length; i++){
+        if(ls[i].name.toLowerCase().contains("favorite")){
+          if(linesData.favorite){
+            ls[i].linesData.add(linesData);
+          }else{
+            for(int j = 0; j < ls[i].linesData.length ; j++){
+              if(ls[i].linesData[j].id == linesData.id){
+                ls[i].linesData.removeAt(j);
+              }
+            }
+          }
+        }
+      }
   }
 
   route() {
@@ -94,33 +116,35 @@ class _MyHomePageState extends State<MyHomePage> {
             chViewlines: chViewlines,
             onChangedLineSel: onChangedLineSel,
               mediaQuery: mediaQuery,
-            onChangedStationSel: onChangedStationSel);
+              favoriteLineToggle: favoriteLineToggle);
         case "Metro":
           return Transport(subject:ls[_currentIndex] ,
             onChanged: onChanged,
             chViewlines: chViewlines,
               onChangedLineSel: onChangedLineSel,
               mediaQuery: mediaQuery,
-              onChangedStationSel: onChangedStationSel);
+              favoriteLineToggle: favoriteLineToggle);
         case "Bus":
           return Transport(subject:ls[_currentIndex] ,
             onChanged: onChanged,
             chViewlines: chViewlines,
               onChangedLineSel: onChangedLineSel,
               mediaQuery: mediaQuery,
-              onChangedStationSel: onChangedStationSel);
+              favoriteLineToggle: favoriteLineToggle);
         case "Tram":
           return Transport(subject:ls[_currentIndex] ,
             onChanged: onChanged,
             chViewlines: chViewlines,
               onChangedLineSel: onChangedLineSel,
               mediaQuery: mediaQuery,
-              onChangedStationSel: onChangedStationSel);
+              favoriteLineToggle: favoriteLineToggle);
         case "Favorite":
-          return BusTrans(subject:ls[_currentIndex] ,
-            onChanged: onChanged,
-//            chViewlines: chViewlines,
-            );
+          return Transport(subject:ls[_currentIndex] ,
+              onChanged: onChanged,
+              chViewlines: chViewlines,
+              onChangedLineSel: onChangedLineSel,
+              mediaQuery: mediaQuery,
+              favoriteLineToggle: favoriteLineToggle);
         }
     }
 
@@ -159,5 +183,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
 }
